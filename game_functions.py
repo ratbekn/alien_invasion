@@ -59,5 +59,5 @@ def update_bullets(bullets):
     bullets.update()
     # Get rid of bullets that have disappeared.
     for bullet in bullets.copy():
-        if bullet.rect.bottom <= 0:
+        if bullet.rect.left >= bullet.screen.get_rect().right:
             bullets.remove(bullet)
