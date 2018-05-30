@@ -2,7 +2,7 @@ import sys
 import pygame
 
 
-def check_events(ship):
+def check_events(settings, screen, ship, bullets):
     """Respond to keppresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -29,7 +29,7 @@ def check_keyup_events(event, ship):
         ship.moving_left = False
 
 
-def update_screen(settings, screen, ship):
+def update_screen(settings, screen, ship, bullets):
     """Update images on the screen and flip to the new screen."""
     # Redraw the screen during each pass through the loop.
     screen.fill(settings.bg_color)
