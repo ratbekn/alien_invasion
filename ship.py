@@ -8,7 +8,8 @@ class Ship():
         self.settings = settings
 
         # Load the ship image and get its rectangle.
-        self.image = pygame.image.load('images/ship.bmp')
+        image = pygame.image.load('images/ship.bmp')
+        self.image = pygame.transform.rotate(image, -90)
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
 
