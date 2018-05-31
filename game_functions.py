@@ -39,6 +39,8 @@ def check_keyup_events(event, ship):
         ship.moving_right = False
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
+    elif event.key == pygame.K_q:
+        sys.exit()
 
 
 def update_screen(settings, screen, ship, aliens, bullets):
