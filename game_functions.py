@@ -72,7 +72,8 @@ def check_keyup_events(event, ship):
         sys.exit()
 
 
-def update_screen(settings, screen, stats, ship, aliens, bullets, play_button):
+def update_screen(settings, screen, stats, sb, ship, aliens, bullets,
+                  play_button):
     """Update images on the screen and flip to the new screen."""
     # Redraw the screen during each pass through the loop.
     screen.fill(settings.bg_color)
@@ -82,6 +83,8 @@ def update_screen(settings, screen, stats, ship, aliens, bullets, play_button):
     ship.blitme()
     aliens.draw(screen)
 
+    sb.show_score()
+
     # Draw the play buton if the game is inactive.
     if not stats.game_active:
         play_button.draw_button()
@@ -90,7 +93,7 @@ def update_screen(settings, screen, stats, ship, aliens, bullets, play_button):
     pygame.display.flip()
 
 
-def update_bullets(settings, screen, ship, aliens, bullets):
+def update_bullets(settings, screen, stats, sb, ship, aliens, bullets):
     """Update position of bullets and get rid of old bullets."""
     # Update bullet positions.
     bullets.update()
@@ -99,13 +102,20 @@ def update_bullets(settings, screen, ship, aliens, bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
-    check_bullet_alien_collisions(settings, screen, ship, aliens, bullets)
+    check_bullet_alien_collisions(settings, screen, stats, sb, ship, aliens,
+                                  bullets)
 
 
-def check_bullet_alien_collisions(settings, screen, ship, aliens, bullets):
+def check_bullet_alien_collisions(settings, screen, stats, sb, ship, aliens,
+                                  bullets):
     """Respond to bullet-alien collisions."""
     # Remove any bullets and aliens that have collided.
     collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += settings.alien_points * len(aliens)
+            sb.prep_score()
 
     if len(aliens) == 0:
         # Destroy existing bullets, speed up game, and create new fleet.
