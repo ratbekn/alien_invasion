@@ -5,7 +5,8 @@ from alien import Alien
 from time import sleep
 
 
-def check_events(settings, screen, stats, play_button, ship, aliens, bullets):
+def check_events(settings, screen, stats, sb, play_button, ship, aliens,
+                 bullets):
     """Respond to keppresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -16,11 +17,11 @@ def check_events(settings, screen, stats, play_button, ship, aliens, bullets):
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(settings, screen, stats, play_button, ship,
+            check_play_button(settings, screen, stats, sb, play_button, ship,
                               aliens, bullets, mouse_x, mouse_y)
 
 
-def check_play_button(settings, screen, stats, play_button, ship, aliens,
+def check_play_button(settings, screen, stats, sb, play_button, ship, aliens,
                       bullets, mouse_x, mouse_y):
     """Start a new game when the player clicks Play."""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
@@ -34,6 +35,11 @@ def check_play_button(settings, screen, stats, play_button, ship, aliens,
         # Reset the game statistics.
         stats.reset_stats()
         stats.game_active = True
+
+        # Reset the scoreboard images.
+        sb.prep_score()
+        sb.prep_high_score()
+        sb.prep_level()
 
         # Empty the list of aliens and bullets.
         aliens.empty()
@@ -119,9 +125,14 @@ def check_bullet_alien_collisions(settings, screen, stats, sb, ship, aliens,
         check_high_score(stats, sb)
 
     if len(aliens) == 0:
-        # Destroy existing bullets, speed up game, and create new fleet.
+        # If the entire fleet is destroyed, start new level.
         bullets.empty()
         settings.increase_speed()
+
+        # Increase level.
+        stats.level += 1
+        sb.prep_level()
+
         create_fleet(settings, screen, ship, aliens)
 
 
